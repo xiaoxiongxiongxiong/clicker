@@ -19,6 +19,8 @@ clicker::clicker(QWidget * parent)
     ui.m_edtIntervalMin->setValidator(validator);
     ui.m_edtIntervalMax->setValidator(validator);
 
+    ui.m_btnCtrl->setEnabled(false);
+
     QImage * m_imgLogin = new QImage;
     if (m_imgLogin->load(":/clicker/res/clicker.ico"))
     {
@@ -158,6 +160,7 @@ void clicker::keyReleaseEvent(QKeyEvent * event)
         ui.m_labPos->setText(QStringLiteral("位置已设定"));
         //ui.m_edtHorizontal->setText(QString::number(pt.x()));
         //ui.m_edtVertical->setText(QString::number(pt.y()));
+        ui.m_btnCtrl->setEnabled(true);
     }
 
     QWidget::keyReleaseEvent(event);
