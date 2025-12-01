@@ -78,7 +78,7 @@ void clicker::onBtnClickedClose()
             _thr.join();
         //ui.m_btnCtrl->setText(QStringLiteral("启 动"));
         ui.m_btnCtrl->setIcon(QIcon(":/clicker/res/pause.ico"));
-        ui.m_labMessage->setText(QStringLiteral("倒计时0秒，累计点击次数0"));
+        ui.m_labMessage->setText(QStringLiteral("倒计时00:00:00，累计点击次数0"));
     }
 
     QApplication * app;
@@ -92,17 +92,15 @@ void clicker::onBtnClickedCtrl()
         _running.store(false);
         if (_thr.joinable())
             _thr.join();
-        //ui.m_btnCtrl->setText(QStringLiteral("启 动"));
+
         ui.m_btnCtrl->setIcon(QIcon(":/clicker/res/pause.ico"));
-        ui.m_labMessage->setText(QStringLiteral("倒计时0秒，累计点击次数0"));
+        ui.m_labMessage->setText(QStringLiteral("倒计时00:00:00，累计点击次数0"));
         return;
     }
 
     if (m_ptDst.x() <= 0 && m_ptDst.y() <= 0)
     {
         QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("未设定鼠标位置！"));
-        ui.m_labPos->setStyleSheet(R"(color: rgb(255, 0, 0);)");
-        ui.m_labPos->setText(QStringLiteral("位置未设定"));
         return;
     }
 
@@ -143,7 +141,6 @@ void clicker::onBtnClickedCtrl()
         return;
     }
     ui.m_btnCtrl->setIcon(QIcon(":/clicker/res/play.ico"));
-    //ui.m_btnCtrl->setText(QStringLiteral("停 止"));
 }
 
 void clicker::keyPressEvent(QKeyEvent * event)
@@ -156,10 +153,6 @@ void clicker::keyReleaseEvent(QKeyEvent * event)
     if (Qt::Key_A == event->key())
     {
         m_ptDst = QCursor::pos();
-        ui.m_labPos->setStyleSheet(R"(color: rgb(0, 255, 0);)");
-        ui.m_labPos->setText(QStringLiteral("位置已设定"));
-        //ui.m_edtHorizontal->setText(QString::number(pt.x()));
-        //ui.m_edtVertical->setText(QString::number(pt.y()));
         ui.m_btnCtrl->setEnabled(true);
     }
 
@@ -173,7 +166,7 @@ void clicker::processThr()
     int y = m_ptDst.y();
     int min_interval = ui.m_edtIntervalMin->text().toInt();
     int max_interval = ui.m_edtIntervalMax->text().toInt();
-    int interval = QRandomGenerator::global()->bounded(min_interval, max_interval + 1) * 60;
+    int interval = QRandomGenerator::global()->bounded(min_interval, max_interval + 1);// *60;
 
     int64_t last_ts = 0;
     QDateTime tmp = {};
@@ -191,7 +184,8 @@ void clicker::processThr()
 
         if (diff < interval)
         {
-            ui.m_labMessage->setText(QStringLiteral("倒计时%1秒，累计点击次数%2").arg(interval - diff).arg(times));
+            auto val = QTime(0, 0).addSecs(interval - diff);
+            ui.m_labMessage->setText(QStringLiteral("倒计时%1，累计点击次数%2").arg(val.toString("hh:mm:ss")).arg(times));
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
             continue;
         }
