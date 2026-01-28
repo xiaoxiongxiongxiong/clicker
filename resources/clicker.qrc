@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/clicker">
+        <file>res/clicker.ico</file>
+        <file>res/NormalClose.ico</file>
+        <file>res/SelectClose.ico</file>
+        <file>res/NormalMinimize.ico</file>
+        <file>res/SelectMinimize.ico</file>
+        <file>res/pause.ico</file>
+        <file>res/play.ico</file>
+    </qresource>
+</RCC>
